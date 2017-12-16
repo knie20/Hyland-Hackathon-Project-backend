@@ -8,6 +8,7 @@ namespace CCTSBackend.DataTransfer
     public class Wallet
     {
         public virtual long userID {get; set;}
+
         public virtual double amount {get; set;}
         public virtual string pubKey {get; set;}
         public Wallet() { }
