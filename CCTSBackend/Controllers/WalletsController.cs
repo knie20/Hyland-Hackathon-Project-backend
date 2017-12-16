@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using CCTSBackend.DataAccess;
 using CCTSBackend.DataTransfer;
-using System.Runtime.Serialization.Json;
+using CCTSBackend.Service;
 
 namespace CCTSBackend.Controllers
 {
@@ -12,35 +10,32 @@ namespace CCTSBackend.Controllers
     [Route("api/Wallets")]
     public class WalletsController : Controller
     {
-        // GET: api/Wallets
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET: api/Wallets/5
         [HttpGet("{id}", Name = "GetWallet")]
-        public string GetById(int id)
+        public string GetWalletByKey(string pubKey)
         {
-
-
-            Wallet wallet = WalletDB.GetWallet(id);
-
-            string guh = JsonConvert.SerializeObject(wallet).ToString().Replace("\"" , "'");
-            return guh;
+            Wallet wallet = WalletDB.FetchWalletByKey(pubKey);
+            
+            return JSONService.SerializeToJson(wallet);
         }
-        
+
+        // GET: api/Wallets/user/5
+        [HttpGet("user/{userID}", Name = "GetUserWallets")]
+        public string GetUserWalletsByKey(long userID) => 
+            JSONService.SerializeToJson(WalletDB.FetchUserWallets(userID));
+
         // POST: api/Wallets
         [HttpPost]
         public void Post([FromBody]string value)
         {
+            WalletDB.addWallet(JSONService.DeserializeWalletFromJson(value));
         }
         
-        // PUT: api/Wallets/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // PUT: api/Wallets/asflasdlgjvln
+        [HttpPut("{oldPubKey}")]
+        public void Put(string oldPubKey, [FromBody]string value)
         {
+            WalletDB.UpdateWallet(oldPubKey, JSONService.DeserializeWalletFromJson(value));
         }
         
         // DELETE: api/ApiWithActions/5

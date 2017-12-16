@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.SqlClient;
 using CCTSBackend.DataTransfer;
-using System.Threading.Tasks;
 
 namespace CCTSBackend.DataAccess
 {
@@ -43,7 +41,7 @@ namespace CCTSBackend.DataAccess
             }
         }
 
-        public static List<Wallet> GetUserWallets(long userID)
+        public static List<Wallet> FetchUserWallets(long userID)
         {
             List<Wallet> wallets = new List<Wallet>();
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
@@ -73,7 +71,7 @@ namespace CCTSBackend.DataAccess
             return wallets;
         }
 
-        public static Wallet GetWallet(string pubKey)
+        public static Wallet FetchWalletByKey(string pubKey)
         {
             Wallet wallet = null;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
