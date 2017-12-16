@@ -9,10 +9,61 @@ namespace CCTSBackend.DataAccess
 {
     public static class WalletDB
     {
-        public static List<Wallet> GetUserWallets(long userId)
+        public static bool addWallet(Wallet wallet)
+        {
+            SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
+            string insertStatement =
+                "INSERT Wallet" +
+                "(pubKey, userID, amount)" +
+                "VALUES (@pubKey, @userID, @amount)";
+            SqlCommand command = new SqlCommand(insertStatement, connection);
+            command.Parameters.AddWithValue("@pubKey", wallet.pubKey);
+            command.Parameters.AddWithValue("userID", wallet.userID);
+            command.Parameters.AddWithValue("@amount", wallet.amount);
+            try
+            {
+                connection.Open();
+                int count = command.ExecuteNonQuery();
+                if(count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public static List<Wallet> GetUserWallets(long userID)
         {
             List<Wallet> wallets = new List<Wallet>();
-            string selectStatement = "SELECT DISTINCT";
+            SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
+            string selectStatement = "SELECT * FROM Wallets" +
+                "WHERE userID = @userID";
+            SqlCommand command = new SqlCommand(selectStatement, connection);
+            command.Parameters.AddWithValue("@userID", userID);
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Wallet wallet = new Wallet(reader["pubKey"].ToString(),
+                        (long) reader["userID"],
+                        (double) reader["amount"]);
+                }
+            }
+
+            return wallets;
         }
 
         public static Wallet GetWallet(string pubKey)
@@ -48,5 +99,68 @@ namespace CCTSBackend.DataAccess
             return wallet;
         }
 
+        public static bool UpdateWallet(string oldPubKey, Wallet newWallet)
+        {
+            SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
+            string updateStatement =
+                "UPDATE Wallet SET" +
+                "pubKey = @pubKey," +
+                "userID = @userID," +
+                "amount = @amount" +
+                "WHERE pubKey = @oldPubKey";
+            SqlCommand command = new SqlCommand(updateStatement, connection);
+            command.Parameters.AddWithValue("@pubKey", newWallet.pubKey);
+            command.Parameters.AddWithValue("@userID", newWallet.userID);
+            command.Parameters.AddWithValue("@amount", newWallet.amount);
+            command.Parameters.AddWithValue("@oldPubKey", oldPubKey);
+            try
+            {
+                connection.Open();
+                int count = command.ExecuteNonQuery();
+                if(count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(SqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public static bool DeleteWallet(long pubKey)
+        {
+            SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
+            string deleteStatement =
+                "DELETE FROM Wallet" +
+                "WHERE pubKey = @pubKey";
+            SqlCommand command = new SqlCommand(deleteStatement, connection);
+            command.Parameters.AddWithValue("@pubKey", pubKey);
+            try
+            {
+                connection.Open();
+                int count = command.ExecuteNonQuery();
+                if(count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch(SqlException e)
+            {
+                throw e;
+            }
+        }
+         
     }
 }
