@@ -57,10 +57,17 @@ namespace CCTSBackend.DataAccess
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Wallet wallet = new Wallet(reader["pubKey"].ToString(),
-                        (long) reader["userID"],
-                        (double) reader["amount"]);
+                    wallets.Add(new Wallet(reader["pubKey"].ToString(),
+                        (long)reader["userID"],
+                        (double)reader["amount"]));
                 }
+            }catch(SqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                connection.Close();
             }
 
             return wallets;
