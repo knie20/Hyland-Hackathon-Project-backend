@@ -8,6 +8,13 @@ namespace CCTSBackend.Http
 {
     public class BlockCypherApiCaller
     {
-        public static Wallet GetWallet(string pubKey)
+        private static string ADDRESS_ENDPOINT_PATH = "https://api.blockcypher.com/v1/btc/main/addrs/";
+        
+        public static Wallet GetWallet(string address)
+        {
+
+        }
+
+        public 
     }
 }

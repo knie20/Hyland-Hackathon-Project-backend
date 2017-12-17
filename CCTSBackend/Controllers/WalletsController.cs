@@ -11,7 +11,7 @@ namespace CCTSBackend.Controllers
     {
         // GET: api/Wallets/5
         [HttpGet("{address}", Name = "GetWallet")]
-        public string GetWalletByKey(string pubKey)
+        public string GetWalletByKey(string address)
         {
             Wallet wallet = WalletDB.FetchWalletByKey(pubKey);
             
@@ -29,7 +29,14 @@ namespace CCTSBackend.Controllers
         {
             WalletDB.AddWallet(wallet);
         }
-        
+
+        //POST: api/test/hello
+        [HttpPost("test/{str}")]
+        public string Post(string str, [FromForm]string msg)
+        {
+            return "You have said" + str + " and " + msg + "!";
+        }
+
         // PUT: api/Wallets/asflasdlgjvln
         [HttpPut("{address}")]
         public void Put(string address, [FromForm]Wallet wallet)
