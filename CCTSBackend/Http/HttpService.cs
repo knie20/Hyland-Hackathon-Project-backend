@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace CCTSBackend.Service
+namespace CCTSBackend.Http
 {
-    public class HttpService
+    public static class HttpService
     {
 
         static HttpClient client = new HttpClient();
@@ -19,9 +19,9 @@ namespace CCTSBackend.Service
             HttpResponseMessage response = await client.GetAsync(path);
             if (response.IsSuccessStatusCode)
             {
-                str = await response.Content.ReadAsStringAsync();
+                str = await @response.Content.ReadAsStringAsync();
             }
-            return str;
+            return JsonConvert.DeserializeObject<string>(str);
         }
 
         public static async Task<Uri> PostHttpJson(Object obj, string path)

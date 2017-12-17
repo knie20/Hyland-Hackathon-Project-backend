@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CCTSBackend.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ namespace CCTSBackend
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            BlockCypherApiCaller.GetWallet("1DEP8i3QJCsomS4BSMY2RpU1upv62aGvhD");
         }
 
         public IConfiguration Configuration { get; }
