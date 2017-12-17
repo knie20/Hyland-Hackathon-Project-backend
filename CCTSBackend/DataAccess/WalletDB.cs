@@ -7,16 +7,17 @@ namespace CCTSBackend.DataAccess
 {
     public static class WalletDB
     {
-        public static bool addWallet(Wallet wallet)
+        public static bool AddWallet(Wallet wallet)
         {
+            bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string insertStatement =
+            string query =
                 "INSERT Wallet" +
                 "(pubKey, userID, amount)" +
                 "VALUES (@pubKey, @userID, @amount)";
-            SqlCommand command = new SqlCommand(insertStatement, connection);
+            SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@pubKey", wallet.pubKey);
-            command.Parameters.AddWithValue("userID", wallet.userID);
+            command.Parameters.AddWithValue("@userID", wallet.userID);
             command.Parameters.AddWithValue("@amount", wallet.amount);
             try
             {
@@ -24,30 +25,32 @@ namespace CCTSBackend.DataAccess
                 int count = command.ExecuteNonQuery();
                 if(count > 0)
                 {
-                    return true;
+                    retVal = true;
                 }
                 else
                 {
-                    return false;
+                    retVal = false;
                 }
             }
             catch (SqlException e)
             {
-                throw e;
+                Console.Write(e);
             }
             finally
             {
                 connection.Close();
             }
+
+            return retVal;
         }
 
         public static List<Wallet> FetchUserWallets(long userID)
         {
             List<Wallet> wallets = new List<Wallet>();
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string selectStatement = "SELECT * FROM Wallets" +
+            string query = "SELECT * FROM Wallets" +
                 "WHERE userID = @userID";
-            SqlCommand command = new SqlCommand(selectStatement, connection);
+            SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@userID", userID);
             try
             {
@@ -61,7 +64,7 @@ namespace CCTSBackend.DataAccess
                 }
             }catch(SqlException e)
             {
-                throw e;
+                Console.Write(e);
             }
             finally
             {
@@ -75,8 +78,9 @@ namespace CCTSBackend.DataAccess
         {
             Wallet wallet = null;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string selectStatement = "SELECT * FROM Wallet WHERE Id = @pubKey";
-            SqlCommand command = new SqlCommand(selectStatement, connection);
+            string query = "SELECT * FROM Wallet " +
+                "WHERE pubKey = @pubKey";
+            SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@pubKey", pubKey);
 
             try
@@ -106,15 +110,10 @@ namespace CCTSBackend.DataAccess
 
         public static bool UpdateWallet(string oldPubKey, Wallet newWallet)
         {
+            bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string updateStatement =
-                "UPDATE Wallet SET" +
-                "pubKey = @pubKey," +
-                "userID = @userID," +
-                "amount = @amount" +
-                "WHERE pubKey = @oldPubKey";
-            SqlCommand command = new SqlCommand(updateStatement, connection);
-            command.Parameters.AddWithValue("@pubKey", newWallet.pubKey);
+            string query = "UPDATE Wallet SET userID = @userID, amount = @amount WHERE pubKey = @oldPubKey";
+            SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@userID", newWallet.userID);
             command.Parameters.AddWithValue("@amount", newWallet.amount);
             command.Parameters.AddWithValue("@oldPubKey", oldPubKey);
@@ -124,30 +123,31 @@ namespace CCTSBackend.DataAccess
                 int count = command.ExecuteNonQuery();
                 if(count > 0)
                 {
-                    return true;
+                     retVal = true;
                 }
                 else
                 {
-                    return false;
+                    retVal = false;
                 }
             }
             catch(SqlException e)
             {
-                throw e;
+                Console.Write(e);
             }
             finally
             {
                 connection.Close();
             }
+
+            return retVal;
         }
 
-        public static bool DeleteWallet(long pubKey)
+        public static bool DeleteWallet(string pubKey)
         {
+            bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string deleteStatement =
-                "DELETE FROM Wallet" +
-                "WHERE pubKey = @pubKey";
-            SqlCommand command = new SqlCommand(deleteStatement, connection);
+            string query = "DELETE FROM Wallet WHERE pubKey = @pubKey";
+            SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@pubKey", pubKey);
             try
             {
@@ -155,16 +155,18 @@ namespace CCTSBackend.DataAccess
                 int count = command.ExecuteNonQuery();
                 if(count > 0)
                 {
-                    return true;
+                    retVal = true;
                 }
                 else
                 {
-                    return false;
+                    retVal = false;
                 }
             }catch(SqlException e)
             {
-                throw e;
+                Console.Write(e);
             }
+
+            return retVal;
         }
          
     }

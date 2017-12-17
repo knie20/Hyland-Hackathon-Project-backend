@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using CCTSBackend.DataAccess;
 using CCTSBackend.DataTransfer;
 using CCTSBackend.Service;
@@ -11,7 +10,7 @@ namespace CCTSBackend.Controllers
     public class WalletsController : Controller
     {
         // GET: api/Wallets/5
-        [HttpGet("{id}", Name = "GetWallet")]
+        [HttpGet("{pubKey}", Name = "GetWallet")]
         public string GetWalletByKey(string pubKey)
         {
             Wallet wallet = WalletDB.FetchWalletByKey(pubKey);
@@ -25,23 +24,24 @@ namespace CCTSBackend.Controllers
             JSONService.SerializeToJson(WalletDB.FetchUserWallets(userID));
 
         // POST: api/Wallets
-        [HttpPost]
-        public void Post([FromBody]string value)
+        [HttpPost("")]
+        public void Post([FromForm]Wallet wallet)
         {
-            WalletDB.addWallet(JSONService.DeserializeWalletFromJson(value));
+            WalletDB.AddWallet(wallet);
         }
         
         // PUT: api/Wallets/asflasdlgjvln
         [HttpPut("{oldPubKey}")]
-        public void Put(string oldPubKey, [FromBody]string value)
+        public void Put(string oldPubKey, [FromForm]Wallet wallet)
         {
-            WalletDB.UpdateWallet(oldPubKey, JSONService.DeserializeWalletFromJson(value));
+            WalletDB.UpdateWallet(oldPubKey, wallet);
         }
         
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE: api/delete/5
+        [HttpDelete("{pubKey}")]
+        public void Delete(string pubKey)
         {
+            WalletDB.DeleteWallet(pubKey);
         }
     }
 }
