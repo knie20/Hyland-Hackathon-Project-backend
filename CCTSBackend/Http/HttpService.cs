@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace CCTSBackend.Http
 {
@@ -13,6 +14,8 @@ namespace CCTSBackend.Http
     {
 
         static HttpClient client = new HttpClient();
+        private static byte[] byteArray;
+
         public static async Task<String> GetHttpJson(string path)
         {
             string str = "";
@@ -24,13 +27,13 @@ namespace CCTSBackend.Http
             return JsonConvert.DeserializeObject<string>(str);
         }
 
-        public static async Task<Uri> PostHttpJson(Object obj, string path)
+        public static async Task<string> PostHttpJson(Object obj, string path)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync(path, obj);
+            HttpResponseMessage response = await client.PostAsJsonAsync(" ", path);
             response.EnsureSuccessStatusCode();
 
             //return URI of the created resource.
-            return response.Headers.Location;
+            return response.Content.ToString();
         }
 
         public static async Task<String> PutHttpJson(Object obj, string path)
@@ -46,5 +49,7 @@ namespace CCTSBackend.Http
             HttpResponseMessage response = await client.DeleteAsync(path);
             return response.StatusCode;
         }
+
+
     }
 }
