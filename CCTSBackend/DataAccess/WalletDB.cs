@@ -13,10 +13,10 @@ namespace CCTSBackend.DataAccess
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
             string query =
                 "INSERT Wallet" +
-                "(pubKey, userID, amount)" +
-                "VALUES (@pubKey, @userID, @amount)";
+                "(address, userID, amount)" +
+                "VALUES (@address, @userID, @amount)";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@pubKey", wallet.pubKey);
+            command.Parameters.AddWithValue("@address", wallet.address);
             command.Parameters.AddWithValue("@userID", wallet.userID);
             command.Parameters.AddWithValue("@amount", wallet.amount);
             try
@@ -58,7 +58,7 @@ namespace CCTSBackend.DataAccess
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    wallets.Add(new Wallet(reader["pubKey"].ToString(),
+                    wallets.Add(new Wallet(reader["address"].ToString(),
                         (long)reader["userID"],
                         (double)reader["amount"]));
                 }
@@ -79,9 +79,9 @@ namespace CCTSBackend.DataAccess
             Wallet wallet = null;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
             string query = "SELECT * FROM Wallet " +
-                "WHERE pubKey = @pubKey";
+                "WHERE address = @address";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@pubKey", pubKey);
+            command.Parameters.AddWithValue("@address", address);
 
             try
             {
@@ -91,7 +91,7 @@ namespace CCTSBackend.DataAccess
                 {
                     wallet = new Wallet
                     {
-                        pubKey = reader["pubKey"].ToString(),
+                        address = reader["address"].ToString(),
                         amount = (double) reader["amount"],
                         userID = (long) reader["userID"]
                     };
@@ -108,15 +108,15 @@ namespace CCTSBackend.DataAccess
             return wallet;
         }
 
-        public static bool UpdateWallet(string oldPubKey, Wallet newWallet)
+        public static bool UpdateWallet(string address, Wallet newWallet)
         {
             bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string query = "UPDATE Wallet SET userID = @userID, amount = @amount WHERE pubKey = @oldPubKey";
+            string query = "UPDATE Wallet SET userID = @userID, amount = @amount WHERE address = @oldPubKey";
             SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@userID", newWallet.userID);
             command.Parameters.AddWithValue("@amount", newWallet.amount);
-            command.Parameters.AddWithValue("@oldPubKey", oldPubKey);
+            command.Parameters.AddWithValue("@address", address);
             try
             {
                 connection.Open();
@@ -142,13 +142,13 @@ namespace CCTSBackend.DataAccess
             return retVal;
         }
 
-        public static bool DeleteWallet(string pubKey)
+        public static bool DeleteWallet(string address)
         {
             bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string query = "DELETE FROM Wallet WHERE pubKey = @pubKey";
+            string query = "DELETE FROM Wallet WHERE address = @address";
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@pubKey", pubKey);
+            command.Parameters.AddWithValue("@address", address);
             try
             {
                 connection.Open();

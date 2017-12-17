@@ -10,12 +10,13 @@ namespace CCTSBackend.DataTransfer
         public virtual long userID {get; set;}
 
         public virtual double amount {get; set;}
-        public virtual string pubKey {get; set;}
+        public virtual string address {get; set;}
         public Wallet() { }
-        public Wallet(string pubKey, long userId, double amount){
+
+        public Wallet(string address, long userId, double amount){
             this.userID = userId;
             this.amount = amount;
-            this.pubKey = pubKey;
+            this.address = address;
 
         }
     }

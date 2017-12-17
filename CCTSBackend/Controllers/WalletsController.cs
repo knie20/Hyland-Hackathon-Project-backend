@@ -10,7 +10,7 @@ namespace CCTSBackend.Controllers
     public class WalletsController : Controller
     {
         // GET: api/Wallets/5
-        [HttpGet("{pubKey}", Name = "GetWallet")]
+        [HttpGet("{address}", Name = "GetWallet")]
         public string GetWalletByKey(string pubKey)
         {
             Wallet wallet = WalletDB.FetchWalletByKey(pubKey);
@@ -31,17 +31,17 @@ namespace CCTSBackend.Controllers
         }
         
         // PUT: api/Wallets/asflasdlgjvln
-        [HttpPut("{oldPubKey}")]
-        public void Put(string oldPubKey, [FromForm]Wallet wallet)
+        [HttpPut("{address}")]
+        public void Put(string address, [FromForm]Wallet wallet)
         {
-            WalletDB.UpdateWallet(oldPubKey, wallet);
+            WalletDB.UpdateWallet(address, wallet);
         }
         
-        // DELETE: api/delete/5
-        [HttpDelete("{pubKey}")]
-        public void Delete(string pubKey)
+        // DELETE: api/Wallets/5
+        [HttpDelete("{address}")]
+        public void Delete(string address)
         {
-            WalletDB.DeleteWallet(pubKey);
+            WalletDB.DeleteWallet(address);
         }
     }
 }
