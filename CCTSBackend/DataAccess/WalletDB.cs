@@ -112,7 +112,7 @@ namespace CCTSBackend.DataAccess
         {
             bool retVal = false;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());
-            string query = "UPDATE Wallet SET userID = @userID, amount = @amount WHERE address = @oldPubKey";
+            string query = "UPDATE Wallet SET userID = @userID, amount = @amount WHERE address = @address";
             SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@userID", newWallet.userID);
             command.Parameters.AddWithValue("@amount", newWallet.amount);
