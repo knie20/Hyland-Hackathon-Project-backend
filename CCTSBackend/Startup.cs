@@ -17,7 +17,6 @@ namespace CCTSBackend
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            BlockCypherApiCaller.GenerateWallet();
         }
 
         public IConfiguration Configuration { get; }
