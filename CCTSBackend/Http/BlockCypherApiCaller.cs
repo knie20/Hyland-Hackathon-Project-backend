@@ -12,9 +12,9 @@ namespace CCTSBackend.Http
         
         public static Wallet GetWallet(string address)
         {
-
+            return null;
         }
 
-        public 
+        
     }
 }

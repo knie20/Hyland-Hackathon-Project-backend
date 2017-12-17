@@ -74,7 +74,7 @@ namespace CCTSBackend.DataAccess
             return wallets;
         }
 
-        public static Wallet FetchWalletByKey(string pubKey)
+        public static Wallet FetchWalletByKey(string address)
         {
             Wallet wallet = null;
             SqlConnection connection = new SqlConnection(DBUtils.GetConnectionString());

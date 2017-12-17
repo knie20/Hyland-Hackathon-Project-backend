@@ -13,7 +13,7 @@ namespace CCTSBackend.Controllers
         [HttpGet("{address}", Name = "GetWallet")]
         public string GetWalletByKey(string address)
         {
-            Wallet wallet = WalletDB.FetchWalletByKey(pubKey);
+            Wallet wallet = WalletDB.FetchWalletByKey(address);
             
             return JSONService.SerializeToJson(wallet);
         }
